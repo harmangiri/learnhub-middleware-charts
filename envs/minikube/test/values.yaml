@@ -1,3 +1,5 @@
 hosts:
   - api-test.learnhub.local
   - api-test.learnhub.com
+networking:
+  enabled: false

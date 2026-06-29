@@ -1,3 +1,5 @@
 hosts:
   - api-prod.learnhub.local
   - api-prod.learnhub.com
+networking:
+  enabled: false

@@ -1,3 +1,4 @@
+{{- if .Values.networking.enabled -}}
 apiVersion: networking.istio.io/v1
 kind: Gateway
 metadata:
@@ -16,3 +17,4 @@ spec:
         protocol: HTTP
       tls:
         httpsRedirect: false
+{{- end -}}
