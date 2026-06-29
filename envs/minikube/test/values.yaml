@@ -1,0 +1,3 @@
+hosts:
+  - api-test.learnhub.local
+  - api-test.learnhub.com

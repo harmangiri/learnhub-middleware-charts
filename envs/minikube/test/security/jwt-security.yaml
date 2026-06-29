@@ -1,0 +1,8 @@
+jwtRules:
+  - issuer: "https://auth-test.learnhub.com/"
+    jwksUri: "https://auth-test.learnhub.com/.well-known/jwks.json"
+    outputPayloadToHeader: x-token-payload
+    forwardOriginalToken: true
+    audiences:
+      - api.learnhub.com
+      - https://api.test.learnhub.local/api/

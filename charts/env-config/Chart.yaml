@@ -1,0 +1,9 @@
+apiVersion: v1
+name: learnhub-middleware-env-configuration-charts
+description: A helm chart for learnhub environment configuration
+
+type: application
+
+version: 0.0.1
+
+appVersion: 0.0.1

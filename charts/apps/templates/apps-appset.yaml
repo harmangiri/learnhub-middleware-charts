@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: apps-appset-{{ .Values.env }}
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+        revision: HEAD
+        files:
+          - path: "envs/{{ .Values.region }}/{{ .Values.env }}/apps/versions.yaml"
+  template:
+    metadata:
+      # Naming: learnhub-api-dev
+      name: '{{ `{{name}}` }}-{{ .Values.env }}'
+    spec:
+      project: default
+      sources:
+        - repoURL: https://github.com/harmangiri/{{ `{{name}}` }}.git
+          targetRevision: '{{ `{{version}}` }}'   # 'version' is the tag from versions.yaml (e.g., v1.0.3)
+          path: '.'
+          helm:
+            # Keep the Helm release name = bare service name (NOT the env-suffixed
+            # Application name), so the in-cluster Service name stays stable and the
+            # networking VirtualService 'host: <service>' keeps resolving to endpoints.
+            releaseName: '{{ `{{name}}` }}'
+            valueFiles:
+              # Shared JWT rules for the environment
+              - '$values/envs/{{ .Values.region }}/{{ .Values.env }}/security/jwt-security.yaml'
+              # Optional app-specific overrides
+              - '$values/envs/{{ .Values.region }}/{{ .Values.env }}/apps/{{ `{{name}}` }}/values.yaml'
+        - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+          targetRevision: HEAD
+          ref: values # This 'ref' creates the $values variable
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{ .Values.env }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: false

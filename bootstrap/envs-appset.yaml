@@ -1,0 +1,66 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: middleware-appset
+  namespace: argocd
+spec:
+  generators:
+    # 1. Discover the environments (dev, test, prod) from your repo
+    - git:
+        repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+        revision: HEAD
+        directories:
+          - path: envs/*/*
+        # This prefix allows us to use {{env.path.basename}}
+        pathParamPrefix: env
+
+    # 2. Discover the target clusters based on the environment name
+#    - clusters:
+#        selector:
+#          matchLabels:
+#            # This matches clusters labeled 'env: dev', 'env: prod', etc.
+#            env: '{{env.path.basename}}'
+
+
+  template:
+    metadata:
+      # Naming: learnhub-dev
+      name: '{{env.path.basename}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+          targetRevision: HEAD
+          path: 'charts/apps'
+          helm:
+            parameters:
+              - name: "env"
+                value: '{{env.path.basename}}'
+              - name: "region"
+                value: '{{env.path[1]}}'
+
+        - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+          targetRevision: HEAD
+          path: 'charts/env-config'
+          helm:
+            valueFiles:
+              - '$values/envs/{{env.path[1]}}/{{env.path.basename}}/values.yaml'
+
+        - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+          targetRevision: HEAD
+          path: 'charts/networking'
+          helm:
+            valueFiles:
+              - '$values/envs/{{env.path[1]}}/{{env.path.basename}}/values.yaml'
+
+        - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
+          targetRevision: HEAD
+          ref: values
+
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{env.path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: false

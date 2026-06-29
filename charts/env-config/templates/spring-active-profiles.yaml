@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: {{ .Release.Namespace }}
+data:
+  active_spring_profile: '{{ .Release.Namespace }}'

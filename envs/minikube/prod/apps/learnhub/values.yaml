@@ -1,0 +1,7 @@
+# App-specific overrides for learnhub in prod environment
+replicaCount: 3
+
+image:
+  repository: ghcr.io/harmangiri/learnhub
+  pullPolicy: IfNotPresent
+  tag: "v1.0.3"
