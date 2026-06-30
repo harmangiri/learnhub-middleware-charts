@@ -18,7 +18,7 @@ spec:
       project: default
       sources:
         - repoURL: https://github.com/harmangiri/{{ `{{name}}` }}.git
-          targetRevision: '{{ `{{version}}` }}'   # 'version' is the tag from versions.yaml (e.g., v1.0.3)
+          targetRevision: 'main'   # 'version' is the tag from versions.yaml (e.g., v1.0.3)
           path: '.'
           helm:
             # Keep the Helm release name = bare service name (NOT the env-suffixed

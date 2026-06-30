@@ -55,7 +55,7 @@ spec:
 
         - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
           targetRevision: HEAD
-          ref: values
+
 
       destination:
         server: https://kubernetes.default.svc
