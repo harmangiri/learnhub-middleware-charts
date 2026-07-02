@@ -19,6 +19,7 @@ spec:
       sources:
         - repoURL: https://github.com/harmangiri/{{ `{{name}}` }}.git
           targetRevision: '{{ `{{version}}` }}'   # 'version' is the tag from versions.yaml (e.g., v1.0.3)
+          path: '.'
           helm:
             # Keep the Helm release name = bare service name (NOT the env-suffixed
             # Application name), so the in-cluster Service name stays stable and the
@@ -30,7 +31,7 @@ spec:
               # Optional app-specific overrides
               - '$values/envs/{{ .Values.region }}/{{ .Values.env }}/apps/{{ `{{name}}` }}/values.yaml'
         - repoURL: https://github.com/harmangiri/learnhub-middleware-charts.git
-          targetRevision: main
+          targetRevision: HEAD
           ref: values # This 'ref' creates the $values variable
       destination:
         server: https://kubernetes.default.svc
